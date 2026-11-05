@@ -1,0 +1,206 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "alice",
+      "password_salt": "Ph0xVAl51P3BN15N3M4Drw==",
+      "password_hash": "8KmPnXy8vSnILU+0jAj7yBLYIFFEbGk7UQIw3TrAxS8=",
+      "created_at": "2026-11-04 10:50:25",
+      "role": "customer"
+    },
+    {
+      "id": 2,
+      "username": "bob",
+      "password_salt": "quZPjI0sCgd0fmT0vDulmQ==",
+      "password_hash": "K7rN2pOBn0fUlTDk4tMu5deM68WSup8qOggUdGdpe7A=",
+      "created_at": "2026-11-04 10:50:26",
+      "role": "customer"
+    },
+    {
+      "id": 3,
+      "username": "Ishita12",
+      "password_salt": "ZKrBqFKYOBGAMBI72kdV6g==",
+      "password_hash": "yBdP3V+qluStOvmSzuWh8tytgN+UJPnCCF5dpeAzXqY=",
+      "created_at": "2026-11-04 10:57:42",
+      "role": "customer"
+    },
+    {
+      "id": 4,
+      "username": "Admin12",
+      "password_salt": "1w7QL9r3sqPGO8/z7rMP7A==",
+      "password_hash": "WraBaxlPIPl7PwmwQOSZKVHCn8HK6CQXRGh56s/cw5w=",
+      "created_at": "2026-11-04 11:04:05",
+      "role": "admin"
+    },
+    {
+      "id": 5,
+      "username": "Tanya1",
+      "password_salt": "507TGzFn0buOkH9dKyl5LA==",
+      "password_hash": "o+8kyYUWgoTQFDRAxSxhZDWFLjwVfxEcXu/2QvBXbHE=",
+      "created_at": "2026-11-04 11:18:44",
+      "role": "customer"
+    }
+  ],
+  "products": [
+    {
+      "id": 101,
+      "name": "Laptop",
+      "price": 1000.0,
+      "weight": 25.0,
+      "stock": 4
+    },
+    {
+      "id": 102,
+      "name": "Printer",
+      "price": 3000.0,
+      "weight": 15.0,
+      "stock": 1
+    },
+    {
+      "id": 103,
+      "name": "Smartphone",
+      "price": 799.0,
+      "weight": 0.2,
+      "stock": 12
+    },
+    {
+      "id": 104,
+      "name": "Headphones",
+      "price": 149.0,
+      "weight": 0.5,
+      "stock": 18
+    },
+    {
+      "id": 105,
+      "name": "Keyboard",
+      "price": 89.0,
+      "weight": 0.8,
+      "stock": 25
+    },
+    {
+      "id": 106,
+      "name": "Monitor",
+      "price": 349.0,
+      "weight": 6.5,
+      "stock": 10
+    },
+    {
+      "id": 107,
+      "name": "Webcam",
+      "price": 79.0,
+      "weight": 0.3,
+      "stock": 20
+    },
+    {
+      "id": 108,
+      "name": "Wi-Fi Router",
+      "price": 129.0,
+      "weight": 1.0,
+      "stock": 16
+    },
+    {
+      "id": 109,
+      "name": "Tablet",
+      "price": 499.0,
+      "weight": 0.6,
+      "stock": 14
+    },
+    {
+      "id": 110,
+      "name": "Desk Lamp",
+      "price": 45.0,
+      "weight": 0.9,
+      "stock": 28
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "subtotal": 1000.0,
+      "shipping_cost": 125.0,
+      "total": 1125.0,
+      "created_at": "2026-11-04 10:50:26"
+    },
+    {
+      "id": 2,
+      "user_id": 3,
+      "subtotal": 3000.0,
+      "shipping_cost": 75.0,
+      "total": 3075.0,
+      "created_at": "2026-11-04 10:58:36"
+    },
+    {
+      "id": 3,
+      "user_id": 3,
+      "subtotal": 90.0,
+      "shipping_cost": 9.0,
+      "total": 99.0,
+      "created_at": "2026-11-04 11:12:28"
+    }
+  ],
+  "order_items": [
+    {
+      "id": 1,
+      "order_id": 1,
+      "product_id": 101,
+      "quantity": 1,
+      "unit_price": 1000.0,
+      "unit_weight": 25.0
+    },
+    {
+      "id": 2,
+      "order_id": 2,
+      "product_id": 102,
+      "quantity": 1,
+      "unit_price": 3000.0,
+      "unit_weight": 15.0
+    },
+    {
+      "id": 3,
+      "order_id": 3,
+      "product_id": 110,
+      "quantity": 2,
+      "unit_price": 45.0,
+      "unit_weight": 0.9
+    }
+  ],
+  "shipments": [
+    {
+      "id": 1,
+      "order_id": 1,
+      "recipient": "Alice",
+      "address": "1 Main St",
+      "city": "Town",
+      "postal_code": "12345",
+      "weight": 25.0,
+      "cost": 125.0,
+      "status": "Preparing",
+      "created_at": "2026-11-04 10:50:26"
+    },
+    {
+      "id": 2,
+      "order_id": 2,
+      "recipient": "ishita",
+      "address": "122",
+      "city": "kolk",
+      "postal_code": "12345",
+      "weight": 15.0,
+      "cost": 75.0,
+      "status": "Preparing",
+      "created_at": "2026-11-04 10:58:36"
+    },
+    {
+      "id": 3,
+      "order_id": 3,
+      "recipient": "Ishita",
+      "address": "122",
+      "city": "Kolkata",
+      "postal_code": "12345",
+      "weight": 1.8,
+      "cost": 9.0,
+      "status": "Preparing",
+      "created_at": "2026-11-04 11:12:28"
+    }
+  ]
+}
