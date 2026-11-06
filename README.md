@@ -59,16 +59,16 @@ must run a single instance: sessions and the JSON store are not shared across
 multiple instances. The JSON file is suitable for a small demo; use a managed
 database and shared session storage for a production, scaled store.
 
-## Deploy to an Azure Ubuntu VM with Apache
+## Deploy to an Azure Ubuntu VM with Nginx
 
-Do not use the repository root as Apache's `DocumentRoot`: that exposes source
-files and the checked-in sample store data, and it does not run the Python API.
-For the easiest install, SSH to the VM and paste this single command. It fetches
-the app, starts the Python API, and configures Apache on port 90 to proxy
-requests to it:
+Do not configure the repository as a public web root: that exposes source
+files and checked-in sample data, and it does not run the Python API. For the
+easiest install, SSH to the VM and paste this single command. It fetches the
+app, starts the Python API, configures Nginx on port 90 to proxy requests, and
+stops Apache if it was previously enabled:
 
 ```bash
-set -o pipefail; curl -fsSL https://raw.githubusercontent.com/ishita2004/EY-E-Commerce-application/feature/inventory-value-report/deploy/install-ubuntu-vm.sh | sudo bash
+set -o pipefail; curl -fsSL https://raw.githubusercontent.com/ishita2004/EY-E-Commerce-application/feature/inventory-value-report/deploy/install-nginx-ubuntu-vm.sh | sudo bash
 ```
 
 Then allow inbound TCP port **90** in the Azure network security group and open
@@ -83,16 +83,12 @@ sudo sed -i 's/SECURE_COOKIE=0/SECURE_COOKIE=1/' /etc/systemd/system/mini-store.
 sudo systemctl restart mini-store
 ```
 
-For Let's Encrypt, install Certbot and run
-`sudo certbot --apache -d your-domain.example.com` after pointing the domain to
-the VM and allowing inbound HTTP/HTTPS in its Azure network security group.
-The installer disables the default Apache site and any `app2.conf` site to
-prevent Apache from listing the repository.
+For HTTPS, point a domain to the VM, allow inbound HTTP/HTTPS in the Azure
+network security group, install Certbot, and configure its Nginx plugin.
 
 The store starts with a fresh data file in `/var/lib/mini-store`. It does not
-copy the sample accounts from the repository. Check the app and Apache logs
-with `sudo journalctl -u mini-store` and
-`sudo tail -f /var/log/apache2/mini-store-error.log`.
+copy the sample accounts from the repository. Check app and Nginx logs with
+`sudo journalctl -u mini-store` and `sudo tail -f /var/log/nginx/error.log`.
 
 ## First use
 
