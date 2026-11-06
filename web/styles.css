@@ -177,10 +177,11 @@ footer > span { color: #91948a; font-size: 8px; letter-spacing: .12em; }
 }
 @media (max-width: 640px) {
   .announcement { font-size: 8px; }
-  .site-header { height: 65px; grid-template-columns: 1fr auto; padding: 0 19px; }
-  .wordmark { font-size: 19px; }
-  .main-nav { display: none; }
-  .header-actions { gap: 16px; }
+  .site-header { height: 65px; grid-template-columns: auto 1fr auto; gap: 9px; padding: 0 12px; }
+  .wordmark { font-size: 17px; }
+  .main-nav { display: flex; justify-content: center; gap: 7px; }
+  .nav-link, .text-button, .cart-button { font-size: 9px; }
+  .header-actions { gap: 9px; }
   .hero { grid-template-columns: 1fr; gap: 27px; padding: 32px 19px 34px; }
   .hero-copy { padding: 0; }
   h1 { font-size: clamp(54px, 14vw, 75px); }
