@@ -59,6 +59,62 @@ must run a single instance: sessions and the JSON store are not shared across
 multiple instances. The JSON file is suitable for a small demo; use a managed
 database and shared session storage for a production, scaled store.
 
+## Deploy to an Azure Ubuntu VM with Apache
+
+Do not use the repository root as Apache's `DocumentRoot`: that exposes source
+files and the checked-in sample store data, and it does not run the Python API.
+The files in `deploy/` configure Apache to proxy requests to the Python
+application instead.
+
+On the VM, install Python, Apache, and Git, then clone the deployment branch
+outside Apache's web directories:
+
+```bash
+sudo apt update
+sudo apt install -y apache2 git python3 python3-venv
+sudo mkdir -p /opt/mini-store /var/lib/mini-store
+sudo chown "$USER":"$USER" /opt/mini-store
+git clone --branch feature/inventory-value-report https://github.com/ishita2004/EY-E-Commerce-application.git /opt/mini-store
+cd /opt/mini-store
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+sudo chown -R root:root /opt/mini-store
+sudo chmod -R a+rX /opt/mini-store
+sudo chown www-data:www-data /var/lib/mini-store
+sudo chmod 750 /var/lib/mini-store
+```
+
+Install and enable the Python service and Apache reverse proxy:
+
+```bash
+sudo cp deploy/systemd/mini-store.service /etc/systemd/system/mini-store.service
+sudo cp deploy/apache/mini-store.conf /etc/apache2/sites-available/mini-store.conf
+```
+
+Edit `/etc/apache2/sites-available/mini-store.conf` and replace
+`your-domain.example.com` with your domain. Enable Apache's proxy modules and
+the new site, and disable the default site so it cannot list the repository:
+
+```bash
+sudo a2enmod proxy proxy_http
+sudo a2dissite 000-default.conf
+sudo a2ensite mini-store.conf
+sudo systemctl daemon-reload
+sudo systemctl enable --now mini-store
+sudo apache2ctl configtest
+sudo systemctl reload apache2
+```
+
+Point your domain to the VM and configure HTTPS before accepting sign-ins:
+`SECURE_COOKIE=1` requires the browser to use HTTPS. For Let's Encrypt, install
+Certbot and run `sudo certbot --apache -d your-domain.example.com`. Allow inbound
+HTTP/HTTPS in the Azure network security group; do not expose port 8000.
+
+The store starts with a fresh data file in `/var/lib/mini-store`. It does not
+copy the sample accounts from the repository. Check the app and Apache logs
+with `sudo journalctl -u mini-store` and
+`sudo tail -f /var/log/apache2/mini-store-error.log`.
+
 ## First use
 
 On the first run, the store asks you to create its first admin account. Save
