@@ -63,52 +63,31 @@ database and shared session storage for a production, scaled store.
 
 Do not use the repository root as Apache's `DocumentRoot`: that exposes source
 files and the checked-in sample store data, and it does not run the Python API.
-The files in `deploy/` configure Apache to proxy requests to the Python
-application instead.
-
-On the VM, install Python, Apache, and Git, then clone the deployment branch
-outside Apache's web directories:
+For the easiest install, SSH to the VM and paste this single command. It fetches
+the app, starts the Python API, and configures Apache on port 90 to proxy
+requests to it:
 
 ```bash
-sudo apt update
-sudo apt install -y apache2 git python3 python3-venv
-sudo mkdir -p /opt/mini-store /var/lib/mini-store
-sudo chown "$USER":"$USER" /opt/mini-store
-git clone --branch feature/inventory-value-report https://github.com/ishita2004/EY-E-Commerce-application.git /opt/mini-store
-cd /opt/mini-store
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-sudo chown -R root:root /opt/mini-store
-sudo chmod -R a+rX /opt/mini-store
-sudo chown www-data:www-data /var/lib/mini-store
-sudo chmod 750 /var/lib/mini-store
+set -o pipefail; curl -fsSL https://raw.githubusercontent.com/ishita2004/EY-E-Commerce-application/feature/inventory-value-report/deploy/install-ubuntu-vm.sh | sudo bash
 ```
 
-Install and enable the Python service and Apache reverse proxy:
+Then allow inbound TCP port **90** in the Azure network security group and open
+`http://<your-VM-public-IP>:90/`. Do not expose port 8000. This HTTP setup is
+for testing only; configure HTTPS before accepting real passwords. The script
+uses `SECURE_COOKIE=0` for HTTP testing. After setting up a domain and TLS,
+change this to `SECURE_COOKIE=1` in
+`/etc/systemd/system/mini-store.service` and restart the service:
 
 ```bash
-sudo cp deploy/systemd/mini-store.service /etc/systemd/system/mini-store.service
-sudo cp deploy/apache/mini-store.conf /etc/apache2/sites-available/mini-store.conf
+sudo sed -i 's/SECURE_COOKIE=0/SECURE_COOKIE=1/' /etc/systemd/system/mini-store.service
+sudo systemctl restart mini-store
 ```
 
-Edit `/etc/apache2/sites-available/mini-store.conf` and replace
-`your-domain.example.com` with your domain. Enable Apache's proxy modules and
-the new site, and disable the default site so it cannot list the repository:
-
-```bash
-sudo a2enmod proxy proxy_http
-sudo a2dissite 000-default.conf
-sudo a2ensite mini-store.conf
-sudo systemctl daemon-reload
-sudo systemctl enable --now mini-store
-sudo apache2ctl configtest
-sudo systemctl reload apache2
-```
-
-Point your domain to the VM and configure HTTPS before accepting sign-ins:
-`SECURE_COOKIE=1` requires the browser to use HTTPS. For Let's Encrypt, install
-Certbot and run `sudo certbot --apache -d your-domain.example.com`. Allow inbound
-HTTP/HTTPS in the Azure network security group; do not expose port 8000.
+For Let's Encrypt, install Certbot and run
+`sudo certbot --apache -d your-domain.example.com` after pointing the domain to
+the VM and allowing inbound HTTP/HTTPS in its Azure network security group.
+The installer disables the default Apache site and any `app2.conf` site to
+prevent Apache from listing the repository.
 
 The store starts with a fresh data file in `/var/lib/mini-store`. It does not
 copy the sample accounts from the repository. Check the app and Apache logs
