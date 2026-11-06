@@ -1,4 +1,5 @@
 import json
+import os
 import secrets
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -333,10 +334,15 @@ class StoreRequestHandler(BaseHTTPRequestHandler):
             "connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
         )
         if getattr(self, "_new_session_token", None):
+            secure_cookie = (
+                "; Secure"
+                if os.environ.get("SECURE_COOKIE", "").casefold() in ("1", "true", "yes")
+                else ""
+            )
             self.send_header(
                 "Set-Cookie",
                 f"{SESSION_COOKIE}={self._new_session_token}; Path=/; HttpOnly; "
-                f"SameSite=Strict; Max-Age={SESSION_MAX_AGE}",
+                f"SameSite=Strict; Max-Age={SESSION_MAX_AGE}{secure_cookie}",
             )
 
     def log_message(self, format_string, *args):
@@ -350,8 +356,10 @@ class StoreHTTPServer(ThreadingHTTPServer):
 
 def main():
     initialize_database()
-    server = StoreHTTPServer(("127.0.0.1", 8000), StoreRequestHandler)
-    print("Mini Store is ready at http://127.0.0.1:8000 (press Ctrl+C to stop)")
+    host = os.environ.get("HOST", "127.0.0.1")
+    port = int(os.environ.get("PORT", os.environ.get("WEBSITE_PORT", "8000")))
+    server = StoreHTTPServer((host, port), StoreRequestHandler)
+    print(f"Mini Store is ready on {host}:{port} (press Ctrl+C to stop)")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

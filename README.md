@@ -41,6 +41,24 @@ the command-line shop. Sign up for a customer account or sign in with an
 existing account. Admin accounts can open **Store insights**. The web server
 only listens on this computer; keep the terminal open while using the store.
 
+## Deploy to Azure App Service
+
+The Python storefront can run on a Linux App Service. In Azure, create a
+**Web App** with **Code** publishing and a supported Python runtime, then set:
+
+- Startup command: `python web_server.py`
+- `HOST`: `0.0.0.0` (binds to the App Service network interface)
+- `STORE_DATA_PATH`: `/home/data/store_data.json` (keeps store data outside the
+  deployed application files)
+- `SECURE_COOKIE`: `1` (marks sign-in cookies as HTTPS-only)
+- `SCM_DO_BUILD_DURING_DEPLOYMENT`: `true`
+
+In **Deployment Center**, connect the GitHub repository and select the
+`feature/inventory-value-report` branch to deploy the storefront. App Service
+must run a single instance: sessions and the JSON store are not shared across
+multiple instances. The JSON file is suitable for a small demo; use a managed
+database and shared session storage for a production, scaled store.
+
 ## First use
 
 On the first run, the store asks you to create its first admin account. Save

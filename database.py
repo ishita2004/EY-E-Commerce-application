@@ -1,9 +1,12 @@
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
 
-STORE_PATH = Path(__file__).with_name("store_data.json")
+STORE_PATH = Path(
+    os.environ.get("STORE_DATA_PATH", str(Path(__file__).with_name("store_data.json")))
+)
 DEFAULT_PRODUCTS = [
     {"id": 101, "name": "Laptop", "price": 1000.0, "weight": 25.0, "stock": 5},
     {"id": 102, "name": "Printer", "price": 3000.0, "weight": 15.0, "stock": 2},
@@ -29,6 +32,7 @@ def _empty_store():
 
 
 def save_store(store):
+    STORE_PATH.parent.mkdir(parents=True, exist_ok=True)
     temporary_path = STORE_PATH.with_suffix(".json.tmp")
     temporary_path.write_text(json.dumps(store, indent=2), encoding="utf-8")
     temporary_path.replace(STORE_PATH)
