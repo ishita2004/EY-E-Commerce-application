@@ -1,7 +1,8 @@
 # Mini Store
 
-A small command-line shop where customers can browse products, place orders, and
-track shipments. Store admins can view sales analytics and create a chart.
+A small shop where customers can browse products, place orders, and track
+shipments from the command line or a browser. Store admins can view sales
+analytics and create a chart.
 
 ## Run it on Windows
 
@@ -20,6 +21,25 @@ track shipments. Store admins can view sales analytics and create a chart.
    ```
 
    You can also double-click `run_store.bat`.
+
+## Open the web storefront
+
+1. Install Python 3.10 or newer.
+2. From this folder, run:
+
+   ```powershell
+   py web_server.py
+   ```
+
+3. Open <http://127.0.0.1:8000> in your browser. Press **Ctrl+C** in the
+   terminal to stop the server.
+
+On Windows, you can also double-click `run_store_web.bat`.
+
+The web storefront uses the same accounts, products, orders, and shipments as
+the command-line shop. Sign up for a customer account or sign in with an
+existing account. Admin accounts can open **Store insights**. The web server
+only listens on this computer; keep the terminal open while using the store.
 
 ## First use
 
@@ -49,6 +69,7 @@ data. The store adds its starter products the first time it initializes.
 ## Project files
 
 - `test.py` — starts the menus and handles user input.
+- `web_server.py` and `web/` — serve the local browser storefront and its API.
 - `user_service.py` and `user_model.py` — account creation and sign-in.
 - `product_service.py` — product catalogue.
 - `order_service.py` and `shipment_service.py` — checkout and shipments.
